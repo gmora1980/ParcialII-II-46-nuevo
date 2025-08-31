@@ -17,7 +17,7 @@ Public Class login
             }
             Dim consulta As String = "SELECT * FROM Clientes WHERE Email = @Email AND Password = @Password"
             Dim dt As DataTable = db.ExecuteQuery(consulta, parameters)
-            If dt.Rows.Count = 0 Then
+            If dt.Rows.Count > 0 Then
                 Dim completo As Cliente = Clienteingresado.dtToCliente(dt)
                 Session("ClienteId") = completo.ClienteId
                 Session("Nombre") = completo.Nombre
@@ -25,6 +25,8 @@ Public Class login
                 Session("Telefono") = completo.Telefono
                 Session("Email") = completo.Email
                 Return completo
+            Else
+                Return Nothing
             End If
         Catch ex As Exception
             Return Nothing
@@ -41,7 +43,8 @@ Public Class login
         End If
         Dim cliente As Cliente = verificarcliente(ingresado)
         If cliente IsNot Nothing Then
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alertaExito", "Swal.fire('Exitoso ingreso').then(()=>{window.location.href='Clientes.aspx'});", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "AccesoExitoso",
+                "Swal.fire('Acceso Exitoso').then(() => { window.location.href = 'Clientes.aspx'; });", True)
         Else
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Error", "Swal.fire('Error al ingresar los datos');", True)
         End If

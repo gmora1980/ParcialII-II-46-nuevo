@@ -28,7 +28,7 @@
                     <label style="font-family: 'Times New Roman'; font-size: large; color: black" for="MainContent_txtPassword">Contraseña</label>
                 </div>
 
-                <asp:Button ID="btnRegistrar" runat="server" CssClass="btn btn-success w-100 py-2" Text="Registrarse" OnClick="btnRegistrar_Click" />
+                <asp:Button ID="btnRegistrar" runat="server" CssClass="btn btn-success w-100 py-2" Text="Registrarse" OnClick="btnRegistrar_Click1" />
 
                 <div class="text-center mt-3">
                     <a href="Login.aspx" style="font-family: 'Times New Roman'; font-size: x-large; color: indigo" class="text-decoration-none">¿Ya estás registrado?</a>
