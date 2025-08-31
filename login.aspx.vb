@@ -36,14 +36,14 @@ Public Class login
             .Clave = txtPassword.Text.Trim()
         }
         If String.IsNullOrWhiteSpace(ingresado.Email) Or String.IsNullOrWhiteSpace(ingresado.Clave) Then
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Por favor, ingrese tanto el correo electrónico como la contraseña.');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Campos", "Swal.fire('Por favor, complete todos los campos.');", True)
             Exit Sub
         End If
         Dim cliente As Cliente = verificarcliente(ingresado)
         If cliente IsNot Nothing Then
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alertaExito", "Swal.fire('Exitoso ingreso').then(()=>{window.location.href='Clientes.aspx'});", True)
         Else
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alertError", "alert('Correo electrónico o contraseña incorrectos.');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Error", "Swal.fire('Error al ingresar los datos');", True)
         End If
     End Sub
 End Class
