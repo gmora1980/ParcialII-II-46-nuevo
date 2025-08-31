@@ -17,7 +17,7 @@ Public Class Registrar
             Dim Consulta As String = "INSERT INTO Clientes (Nombre, Apellidos, Email, Password) VALUES (@Nombre, @Apellido, @Email, @Password)"
             Dim parametros As New List(Of SqlParameter) From {
                 New SqlParameter("@Nombre", cliente.Nombre),
-                New SqlParameter("@Apellido", cliente.Apellidos),
+                New SqlParameter("@Apellidos", cliente.Apellidos),
                 New SqlParameter("@Email", cliente.Email),
                 New SqlParameter("@Password", cliente.Clave)
             }
