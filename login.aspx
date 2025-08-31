@@ -10,8 +10,8 @@
             </div>
 
             <div class="form-floating mb-3">
-                <asp:TextBox ID="txtPass" runat="server" CssClass="form-control" TextMode="Password" placeholder="Password"></asp:TextBox>
-                <label for="txtPass">Clave</label>
+                <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Password"></asp:TextBox>
+                <label for="txtPassword">Clave</label>
             </div>
 
             <div class="form-check text-start mb-3">

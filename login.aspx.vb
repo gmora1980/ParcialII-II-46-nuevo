@@ -18,13 +18,32 @@ Public Class login
             Dim consulta As String = "SELECT * FROM Clientes WHERE Email = @Email AND Password = @Password"
             Dim dt As DataTable = db.ExecuteQuery(consulta, parameters)
             If dt.Rows.Count = 0 Then
-
+                Dim completo As Cliente = Clienteingresado.dtToCliente(dt)
+                Session("ClienteId") = completo.ClienteId
+                Session("Nombre") = completo.Nombre
+                Session("Apellidos") = completo.Apellidos
+                Session("Telefono") = completo.Telefono
+                Session("Email") = completo.Email
+                Return completo
             End If
         Catch ex As Exception
             Return Nothing
         End Try
     End Function
     Protected Sub btnLogin_Click(sender As Object, e As EventArgs)
-
+        Dim ingresado As New Cliente() With {
+            .Email = txtEmail.Text.Trim(),
+            .Clave = txtPassword.Text.Trim()
+        }
+        If String.IsNullOrWhiteSpace(ingresado.Email) Or String.IsNullOrWhiteSpace(ingresado.Clave) Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Por favor, ingrese tanto el correo electrónico como la contraseña.');", True)
+            Exit Sub
+        End If
+        Dim cliente As Cliente = verificarcliente(ingresado)
+        If cliente IsNot Nothing Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alertaExito", "Swal.fire('Exitoso ingreso').then(()=>{window.location.href='Clientes.aspx'});", True)
+        Else
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alertError", "alert('Correo electrónico o contraseña incorrectos.');", True)
+        End If
     End Sub
 End Class
