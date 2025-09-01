@@ -48,7 +48,8 @@ Public Class Registrar
             .Telefono = txtTelefono.Text.Trim()
         }
         If Registro(nuevoCliente) Then
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Exito", "Swal.fire('Registro exitoso. Ahora puede iniciar sesión.'); window.location='login.aspx';", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "RegistroExitoso",
+                "Swal.fire('Registro Exitoso').then(() => { window.location.href = 'login.aspx'; });", True)
             LimpiarCampos()
         Else
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Error", "Swal.fire('Error al registrar');", True)

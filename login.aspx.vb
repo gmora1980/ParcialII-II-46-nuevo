@@ -8,45 +8,61 @@ Public Class login
             Response.Redirect("Clientes.aspx")
         End If
     End Sub
-    Protected Function verificarcliente(Clienteingresado As Cliente) As Cliente
+    Protected Function Verify(client As Cliente) As Cliente
         Try
-            Dim db As New DatabaseHelper()
+            Dim help As New DatabaseHelper()
+
             Dim parameters As New List(Of SqlParameter) From {
-                New SqlParameter("@Email", Clienteingresado.Email),
-                New SqlParameter("@Password", Clienteingresado.Clave)
+                New SqlParameter("@Email", client.Email),
+                New SqlParameter("@Password", client.Clave)
             }
-            Dim consulta As String = "SELECT * FROM Clientes WHERE Email = @Email AND Password = @Password"
-            Dim dt As DataTable = db.ExecuteQuery(consulta, parameters)
+
+            Dim query As String = "SELECT ClienteId, Nombre, Apellidos, Telefono, Email, Password FROM Clientes WHERE Email = @Email AND Password = @Password"
+
+            Dim dt As DataTable = help.ExecuteQuery(query, parameters)
+
             If dt.Rows.Count > 0 Then
-                Dim completo As Cliente = Clienteingresado.dtToCliente(dt)
-                Session("ClienteId") = completo.ClienteId
-                Session("Nombre") = completo.Nombre
-                Session("Apellidos") = completo.Apellidos
-                Session("Telefono") = completo.Telefono
-                Session("Email") = completo.Email
-                Return completo
+                ' Usar el método de instancia DtToClientes para mapear datos
+                Dim clienteCompleto As Cliente = client.dtToCliente(dt)
+                ' Guardar datos en sesión
+                Session("ClienteId") = clienteCompleto.ClienteID
+                Session("Nombre") = clienteCompleto.Nombre
+                Session("Apellidos") = clienteCompleto.Apellidos
+                Session("Telefono") = clienteCompleto.Telefono
+                Session("Email") = clienteCompleto.Email
+                Return clienteCompleto
             Else
                 Return Nothing
             End If
+
         Catch ex As Exception
+            ' Aquí puedes loguear el error si quieres
             Return Nothing
         End Try
     End Function
+
     Protected Sub btnLogin_Click(sender As Object, e As EventArgs)
-        Dim ingresado As New Cliente() With {
+        lblError.Visible = False
+
+        Dim client As New Cliente With {
             .Email = txtEmail.Text.Trim(),
-            .Clave = txtPassword.Text.Trim()
+            .Clave = txtPassword.Text
         }
-        If String.IsNullOrWhiteSpace(ingresado.Email) Or String.IsNullOrWhiteSpace(ingresado.Clave) Then
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Campos", "Swal.fire('Por favor, complete todos los campos.');", True)
+
+        If String.IsNullOrWhiteSpace(client.Email) OrElse String.IsNullOrWhiteSpace(client.Clave) Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "CamposVacios",
+                                                "Swal.fire('Por favor, ingrese email y contraseña.');", True)
             Exit Sub
         End If
-        Dim cliente As Cliente = verificarcliente(ingresado)
-        If cliente IsNot Nothing Then
+
+        Dim clienteCompleto As Cliente = Verify(client)
+
+        If clienteCompleto IsNot Nothing Then
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "AccesoExitoso",
                 "Swal.fire('Acceso Exitoso').then(() => { window.location.href = 'Clientes.aspx'; });", True)
         Else
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Error", "Swal.fire('Error al ingresar los datos');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ErrorLogin",
+                "Swal.fire('Usuario o contraseña incorrectos.');", True)
         End If
     End Sub
 End Class

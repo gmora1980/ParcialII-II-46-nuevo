@@ -25,7 +25,7 @@ Public Class Clientes
             GvClientes.DataSource = dt
             GvClientes.DataBind()
         Catch ex As Exception
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Error al cargar los clientes: " & ex.Message & "');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Error", $"Swal.fire('Error al cargar clientes: {ex.Message.Replace("'", "\'")}');", True)
 
         End Try
     End Sub
@@ -35,15 +35,21 @@ Public Class Clientes
         TxtTelefono.Text = ""
         TxtEmail.Text = ""
         ClienteID.Value = ""
+        TxtPass.Text = ""
     End Sub
     Protected Sub BtnGuardar_Click(sender As Object, e As EventArgs)
         Try
-            If String.IsNullOrWhiteSpace(TxtNombre.Text) Or String.IsNullOrWhiteSpace(TxtApellido.Text) Or String.IsNullOrWhiteSpace(TxtTelefono.Text) Or String.IsNullOrWhiteSpace(TxtEmail.Text) Then
-                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Por favor, complete todos los campos.');", True)
+            If String.IsNullOrWhiteSpace(TxtNombre.Text) OrElse
+                String.IsNullOrWhiteSpace(TxtApellido.Text) OrElse
+                String.IsNullOrWhiteSpace(TxtTelefono.Text) OrElse
+                String.IsNullOrWhiteSpace(TxtEmail.Text) OrElse
+                String.IsNullOrWhiteSpace(TxtPass.Text) Then
+
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "CamposVacios", "Swal.fire('Por favor, complete todos los campos.');", True)
                 Return
             End If
             If Not Validacioncorreo(TxtEmail.Text) Then
-                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Por favor, ingrese un correo electrónico válido.');", True)
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "EmailFormato", "Swal.fire('Por favor, ingrese un correo electrónico válido.');", True)
                 Return
             End If
             Dim cliente As New Cliente With {
@@ -63,7 +69,7 @@ Public Class Clientes
                     New SqlParameter("@Password", cliente.Clave)
                 }
                 H.ExecuteNonQuery(consulta, parametros)
-                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Cliente agregado exitosamente.');", True)
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Exito", "Swal.fire('Cliente agregado exitosamente.');", True)
             Else
                 Dim Id As Integer = Convert.ToInt32(ClienteID.Value)
                 Dim consulta As String = "UPDATE Clientes SET Nombre = @Nombre, Apellidos = @Apellidos, Telefono = @Telefono, Email = @Email, Password = @Password WHERE ClienteId = @ClienteId"
@@ -76,12 +82,12 @@ Public Class Clientes
                     New SqlParameter("@ClienteId", Id)
                 }
                 H.ExecuteNonQuery(consulta, parametros)
-                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Cliente actualizado exitosamente.');", True)
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Actualizado", "Swal.fire('Cliente actualizado exitosamente.');", True)
             End If
             LimpiarCampos()
             CargarClientes()
         Catch ex As Exception
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Error al guardar el cliente: " & ex.Message & "');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Fallo", "Swal.fire('Error al guardar el cliente: " & ex.Message & "');", True)
 
         End Try
     End Sub
@@ -101,7 +107,7 @@ Public Class Clientes
             TxtPass.Text = ""
 
         Catch ex As Exception
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Error al seleccionar el cliente: " & ex.Message & "');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Fallo", "Swal.fire('Error al seleccionar el cliente: " & ex.Message & "');", True)
 
         End Try
     End Sub
@@ -114,9 +120,9 @@ Public Class Clientes
             }
             Dim consulta As String = "DELETE FROM Clientes WHERE ClienteId = @ClienteId"
             H.ExecuteNonQuery(consulta, parametros)
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Cliente eliminado exitosamente.');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Eliminado", "Swal.fire('Cliente eliminado exitosamente.');", True)
         Catch ex As Exception
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Error al eliminar el cliente: " & ex.Message & "');", True)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Fallo", "Swal.fire('Error al eliminar el cliente: " & ex.Message & "');", True)
 
         End Try
     End Sub
